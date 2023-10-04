@@ -3,6 +3,5 @@ pandas
 datetime
 timedelta
 keras
-sklearn
 psycopg2
 sqlalchemy
