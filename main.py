@@ -1,12 +1,7 @@
 from fastapi import FastAPI, HTTPException
-# import matplotlib.pyplot as plt
-# from io import BytesIO
 import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-# import matplotlib.pyplot as plt
-# import base64
-# import matplotlib
 from ml2 import CrimePredictionModel
 
 # matplotlib.use('agg')

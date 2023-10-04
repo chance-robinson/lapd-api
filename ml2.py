@@ -1,9 +1,6 @@
 import pandas as pd
 from config import engine
 from tensorflow import keras
-# from scikit-learn.model_selection import train_test_split
-# from sklearn.metrics import confusion_matrix, classification_report
-# import plotly.express as px
 from datetime import datetime, timedelta
 
 class CrimePredictionModel:
@@ -12,33 +9,6 @@ class CrimePredictionModel:
         self.history = None
         self.length = None
         self.totalLength = None
-
-    # def print_metrics(self, X_test, y_test, y_pred):
-    #     # Compute the confusion matrix
-    #     cm = confusion_matrix(y_test, y_pred)
-    #     print("Confusion Matrix:")
-    #     print(cm)
-
-    #     # Compute precision, recall, and F1 score
-    #     report = classification_report(y_test, y_pred)
-    #     print("Classification Report:")
-    #     print(report)
-
-    #     # Print test loss and accuracy
-    #     test_loss, test_accuracy = self.model.evaluate(X_test, y_test, verbose=1)
-    #     print("Test Loss:", test_loss)
-    #     print("Test Accuracy:", test_accuracy)
-
-    #     # Print validation accuracy
-    #     val_accuracy = self.history.history['val_accuracy']
-    #     print("Validation Accuracy:", val_accuracy)
-
-    # def parallel_coordinate_plot(self, X_test, y_pred, y_col_name):
-    #     df_pred = X_test.copy()
-    #     df_pred[y_col_name] = y_pred
-
-    #     fig = px.parallel_coordinates(df_pred, color=f'{y_col_name}')
-    #     fig.show()
 
     def process_data(self, query, cols):
         df = pd.DataFrame(query, columns=cols)
