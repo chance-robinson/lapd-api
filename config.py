@@ -1,12 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import os
 
 def create_dburl():
-  hostname = $DB_HOST
-  username = $DB_USER
-  password = $DB_PASSWORD
-  port = $DB_PORT
-  database = $DB_NAME
+  hostname = os.environ.get('DB_HOST')
+  username = os.environ.get('DB_USER')
+  password = os.environ.get('DB_PASSWORD')
+  port = os.environ.get('DB_PORT')
+  database = os.environ.get('DB_NAME')
   return f"postgresql+psycopg2://{username}:{password}@{hostname}:{port}/{database}"
 
 engine = create_engine(create_dburl())

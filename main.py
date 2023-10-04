@@ -3,8 +3,7 @@ import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from ml2 import CrimePredictionModel
-
-# matplotlib.use('agg')
+import os
 
 app = FastAPI()
 
@@ -24,11 +23,11 @@ class Request(BaseModel):
 
 def execute_query(query):
     conn = psycopg2.connect(
-        host=$DB_HOST,
-        port=$DB_PORT,
-        database=$DB_NAME,
-        user=$DB_USER,
-        password=$DB_PASSWORD
+        host=os.environ.get('DB_HOST'),
+        port=os.environ.get('DB_PORT'),
+        database=os.environ.get('DB_NAME'),
+        user=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASSWORD')
     )
     cursor = conn.cursor()
     cursor.execute(query)
