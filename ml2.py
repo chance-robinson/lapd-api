@@ -1,7 +1,7 @@
 import pandas as pd
 from config import engine
 from tensorflow import keras
-from sklearn.model_selection import train_test_split
+# from scikit-learn.model_selection import train_test_split
 # from sklearn.metrics import confusion_matrix, classification_report
 # import plotly.express as px
 from datetime import datetime, timedelta
@@ -41,77 +41,37 @@ class CrimePredictionModel:
     #     fig.show()
 
     def process_data(self, query, cols):
-        if not query: 
-            query = '''
-            SELECT date_occ
-            FROM public.crime
-            WHERE crm_cd IN (330, 410)
-            ORDER BY dr_no ASC
-            '''
-            df = pd.read_sql(query, engine)
-            # Close the engine connection if needed
-            engine.dispose()
-                    # Data processing
-            df['crm_occ'] = 1
-            df['date_occ'] = pd.to_datetime(df['date_occ'])
-            # Find the newest and oldest dates
-            newest_date = df['date_occ'].max()
-            oldest_date = df['date_occ'].min()
-            # Create a new DataFrame with minute-level granularity
-            minute_range = pd.date_range(start=oldest_date, end=newest_date, freq='min')
-            df_new = pd.DataFrame({'date_occ': minute_range})
-            # Merge the new DataFrame with the original DataFrame based on 'date_occ'
-            df_merged = pd.merge(df_new, df, on='date_occ', how='left')
-            # Fill missing values in 'crm_occ' with 0
-            df_merged['crm_occ'].fillna(0, inplace=True)
-            # Extract the year, month, day, hour, and minute into separate columns
-            df_merged['year'] = df_merged['date_occ'].dt.year
-            df_merged['month'] = df_merged['date_occ'].dt.month
-            df_merged['day'] = df_merged['date_occ'].dt.day
-            df_merged['hour'] = df_merged['date_occ'].dt.hour
-            df_merged['minute'] = df_merged['date_occ'].dt.minute
-            newest_date = df_merged['date_occ'].max()
-            oldest_date = df_merged['date_occ'].min()
-            df_merged = df_merged.drop('date_occ', axis=1)
-
-            # Split the data into features (X) and target variable (y)
-            X = df_merged.drop('crm_occ', axis=1)
-            y = df_merged['crm_occ']
-        else:
-            df = pd.DataFrame(query, columns=cols)
-            df['crm_occ'] = 1
-            df['date_occ'] = pd.to_datetime(df['date_occ'])
-            self.length = df.shape[0]
-            df = df.drop(columns=["crm_cd_desc", "area_name", "location", "dr_no"])
-            coords = (df['lat'], df['long'])
-            df = df.drop(columns=["lat", "long"])
-            # Find the newest and oldest dates
-            newest_date = df['date_occ'].max()
-            oldest_date = df['date_occ'].min()
-            # Create a new DataFrame with minute-level granularity
-            minute_range = pd.date_range(start=oldest_date, end=newest_date, freq='min')
-            df_new = pd.DataFrame({'date_occ': minute_range})
-            # Merge the new DataFrame with the original DataFrame based on 'date_occ'
-            df_merged = pd.merge(df_new, df, on='date_occ', how='left')
-            # Fill missing values in 'crm_occ' with 0
-            df_merged['crm_occ'].fillna(0, inplace=True)
-            # Extract the year, month, day, hour, and minute into separate columns
-            df_merged['year'] = df_merged['date_occ'].dt.year
-            df_merged['month'] = df_merged['date_occ'].dt.month
-            df_merged['day'] = df_merged['date_occ'].dt.day
-            df_merged['hour'] = df_merged['date_occ'].dt.hour
-            df_merged['minute'] = df_merged['date_occ'].dt.minute
-            newest_date = df_merged['date_occ'].max()
-            oldest_date = df_merged['date_occ'].min()
-            df_merged = df_merged.drop('date_occ', axis=1)
-            self.totalLength = df_merged.shape[0]
-            # Split the data into features (X) and target variable (y)
-            X = df_merged.drop('crm_occ', axis=1)
-            y = df_merged['crm_occ']
-            return X, y
-        
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        return X_train, X_test, y_train, y_test
+        df = pd.DataFrame(query, columns=cols)
+        df['crm_occ'] = 1
+        df['date_occ'] = pd.to_datetime(df['date_occ'])
+        self.length = df.shape[0]
+        df = df.drop(columns=["crm_cd_desc", "area_name", "location", "dr_no"])
+        coords = (df['lat'], df['long'])
+        df = df.drop(columns=["lat", "long"])
+        # Find the newest and oldest dates
+        newest_date = df['date_occ'].max()
+        oldest_date = df['date_occ'].min()
+        # Create a new DataFrame with minute-level granularity
+        minute_range = pd.date_range(start=oldest_date, end=newest_date, freq='min')
+        df_new = pd.DataFrame({'date_occ': minute_range})
+        # Merge the new DataFrame with the original DataFrame based on 'date_occ'
+        df_merged = pd.merge(df_new, df, on='date_occ', how='left')
+        # Fill missing values in 'crm_occ' with 0
+        df_merged['crm_occ'].fillna(0, inplace=True)
+        # Extract the year, month, day, hour, and minute into separate columns
+        df_merged['year'] = df_merged['date_occ'].dt.year
+        df_merged['month'] = df_merged['date_occ'].dt.month
+        df_merged['day'] = df_merged['date_occ'].dt.day
+        df_merged['hour'] = df_merged['date_occ'].dt.hour
+        df_merged['minute'] = df_merged['date_occ'].dt.minute
+        newest_date = df_merged['date_occ'].max()
+        oldest_date = df_merged['date_occ'].min()
+        df_merged = df_merged.drop('date_occ', axis=1)
+        self.totalLength = df_merged.shape[0]
+        # Split the data into features (X) and target variable (y)
+        X = df_merged.drop('crm_occ', axis=1)
+        y = df_merged['crm_occ']
+        return X, y
 
     def run_model(self, X_train, y_train):
         # Define the model architecture
