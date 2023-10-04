@@ -2,11 +2,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 def create_dburl():
-  hostname = 'localhost'
-  username = 'postgres'
-  password = 'postgres'
-  port = '5432'
-  database = 'lapd'
+  hostname = $DB_HOST
+  username = $DB_USER
+  password = $DB_PASSWORD
+  port = $DB_PORT
+  database = $DB_NAME
   return f"postgresql+psycopg2://{username}:{password}@{hostname}:{port}/{database}"
 
 engine = create_engine(create_dburl())

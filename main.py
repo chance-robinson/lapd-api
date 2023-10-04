@@ -6,12 +6,6 @@ from ml2 import CrimePredictionModel
 
 # matplotlib.use('agg')
 
-DB_HOST = 'localhost'
-DB_PORT = '5432'
-DB_NAME = 'lapd'
-DB_USER = 'postgres'
-DB_PASSWORD = 'postgres'
-
 app = FastAPI()
 
 app.add_middleware(
@@ -30,11 +24,11 @@ class Request(BaseModel):
 
 def execute_query(query):
     conn = psycopg2.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD
+        host=$DB_HOST,
+        port=$DB_PORT,
+        database=$DB_NAME,
+        user=$DB_USER,
+        password=$DB_PASSWORD
     )
     cursor = conn.cursor()
     cursor.execute(query)
