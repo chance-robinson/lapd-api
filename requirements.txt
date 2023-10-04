@@ -4,6 +4,5 @@ datetime
 timedelta
 keras
 sklearn
-HTTPException
 psycopg2
 matplotlib
