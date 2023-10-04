@@ -1,15 +1,15 @@
 from fastapi import FastAPI, HTTPException
-import matplotlib.pyplot as plt
-from io import BytesIO
+# import matplotlib.pyplot as plt
+# from io import BytesIO
 import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import matplotlib.pyplot as plt
-import base64
-import matplotlib
+# import matplotlib.pyplot as plt
+# import base64
+# import matplotlib
 from ml2 import CrimePredictionModel
 
-matplotlib.use('agg')
+# matplotlib.use('agg')
 
 DB_HOST = 'localhost'
 DB_PORT = '5432'
@@ -145,76 +145,76 @@ def predict_data(data: InputData):
 
 
 
-@app.post('/plot')
-def plot_data(request: Request):
-    try:
-        query_req,cols = query_request(request)
-        tot_crimes = execute_query(query_req)
+# @app.post('/plot')
+# def plot_data(request: Request):
+#     try:
+#         query_req,cols = query_request(request)
+#         tot_crimes = execute_query(query_req)
 
-        dates = list(set([entry[2].date().isoformat() for entry in tot_crimes]))  # Extract the date and convert to ISO format
-        areas = list(set([entry[1] for entry in tot_crimes]))  # Assuming area_name is the second element (index 1)
-        crimes = list(set([entry[0] for entry in tot_crimes]))  # Assuming area_name is the second element (index 1)
-        # Count the occurrences of each area on each date
-        counts = {date: {area: {crime: 0 for crime in crimes} for area in areas} for date in dates}
+#         dates = list(set([entry[2].date().isoformat() for entry in tot_crimes]))  # Extract the date and convert to ISO format
+#         areas = list(set([entry[1] for entry in tot_crimes]))  # Assuming area_name is the second element (index 1)
+#         crimes = list(set([entry[0] for entry in tot_crimes]))  # Assuming area_name is the second element (index 1)
+#         # Count the occurrences of each area on each date
+#         counts = {date: {area: {crime: 0 for crime in crimes} for area in areas} for date in dates}
 
-        for entry in tot_crimes:
-            date = entry[2].date().isoformat()  # Extract the date and convert to ISO format
-            area = entry[1]  # Assuming area_name is the second element (index 1)
-            crime = entry[0]  # Assuming crime description is the first element (index 0)
-            counts[date][area][crime] += 1
-        # Prepare the stacked bar chart data
+#         for entry in tot_crimes:
+#             date = entry[2].date().isoformat()  # Extract the date and convert to ISO format
+#             area = entry[1]  # Assuming area_name is the second element (index 1)
+#             crime = entry[0]  # Assuming crime description is the first element (index 0)
+#             counts[date][area][crime] += 1
+#         # Prepare the stacked bar chart data
 
-        dates = list(counts.keys())
-        areas = list(counts[dates[0]].keys())
-        crimes = list(counts[dates[0]][areas[0]].keys())
-        dates.sort()
-        # Create a dictionary to store the color mapping for each crime
-        crime_colors = {crime: plt.cm.get_cmap('tab10')(idx) for idx, crime in enumerate(crimes)}
+#         dates = list(counts.keys())
+#         areas = list(counts[dates[0]].keys())
+#         crimes = list(counts[dates[0]][areas[0]].keys())
+#         dates.sort()
+#         # Create a dictionary to store the color mapping for each crime
+#         crime_colors = {crime: plt.cm.get_cmap('tab10')(idx) for idx, crime in enumerate(crimes)}
 
 
-        num_bars = len(dates)
-        bar_width = 0.35
+#         num_bars = len(dates)
+#         bar_width = 0.35
 
-        fig, ax = plt.subplots()
-        fig.set_size_inches(10, 6)
+#         fig, ax = plt.subplots()
+#         fig.set_size_inches(10, 6)
 
-        index = 0
-        for i, date in enumerate(dates):
-            crime_counts = [sum(counts[date][area][crime] for area in areas) for crime in crimes]
-            bottom = [sum(crime_counts[:k]) for k in range(len(crime_counts))]
-            for idx, val in enumerate(crime_counts):
-                ax.bar(
-                    index, val, bar_width, bottom=bottom[idx],
-                    label=crimes[idx], color=crime_colors[crimes[idx]]
-                )
-            index += 1
+#         index = 0
+#         for i, date in enumerate(dates):
+#             crime_counts = [sum(counts[date][area][crime] for area in areas) for crime in crimes]
+#             bottom = [sum(crime_counts[:k]) for k in range(len(crime_counts))]
+#             for idx, val in enumerate(crime_counts):
+#                 ax.bar(
+#                     index, val, bar_width, bottom=bottom[idx],
+#                     label=crimes[idx], color=crime_colors[crimes[idx]]
+#                 )
+#             index += 1
 
-        ax.set_xlabel('Date')
-        ax.set_ylabel('Counts')
-        ax.set_title(f'Combined Crime Counts in {areas} by Date')
-        ax.set_xticks(range(num_bars))
-        ax.set_xticklabels(dates)
-        plt.xticks(rotation = 30) # Rotates X-Axis Ticks by 45-degrees
-        handles, labels = ax.get_legend_handles_labels()
-        unique_labels = list(set(labels))
-        unique_handles = [handles[labels.index(label)] for label in unique_labels]
-        box = ax.get_position()
-        ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-        # Put a legend to the right of the current axis
-        ax.legend(unique_handles, unique_labels, loc='center left', bbox_to_anchor=(1, 0.5))
+#         ax.set_xlabel('Date')
+#         ax.set_ylabel('Counts')
+#         ax.set_title(f'Combined Crime Counts in {areas} by Date')
+#         ax.set_xticks(range(num_bars))
+#         ax.set_xticklabels(dates)
+#         plt.xticks(rotation = 30) # Rotates X-Axis Ticks by 45-degrees
+#         handles, labels = ax.get_legend_handles_labels()
+#         unique_labels = list(set(labels))
+#         unique_handles = [handles[labels.index(label)] for label in unique_labels]
+#         box = ax.get_position()
+#         ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+#         # Put a legend to the right of the current axis
+#         ax.legend(unique_handles, unique_labels, loc='center left', bbox_to_anchor=(1, 0.5))
 
-        plt.tight_layout()
+#         plt.tight_layout()
 
-        buffer = BytesIO()
-        plt.savefig(buffer, format='png')
-        plt.close(fig)
-        buffer.seek(0)
-        encoded_image = base64.b64encode(buffer.read()).decode()
+#         buffer = BytesIO()
+#         plt.savefig(buffer, format='png')
+#         plt.close(fig)
+#         buffer.seek(0)
+#         encoded_image = base64.b64encode(buffer.read()).decode()
 
-        return {"crimes": tot_crimes, "plot": encoded_image, "cols": cols}
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=500, detail=str(e))
+#         return {"crimes": tot_crimes, "plot": encoded_image, "cols": cols}
+#     except Exception as e:
+#         print(e)
+#         raise HTTPException(status_code=500, detail=str(e))
 
 
 # if __name__ == "__main__":
