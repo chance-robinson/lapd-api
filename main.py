@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from ml2 import CrimePredictionModel
+# from ml2 import CrimePredictionModel
 import os
 
 app = FastAPI()
@@ -121,15 +121,15 @@ class InputData(BaseModel):
     data: list
     cols: list
 
-@app.post('/predict')
-def predict_data(data: InputData):
-    try:
-        cpm = CrimePredictionModel()
-        query_req = cpm.runAll(data.data, data.cols, 1)
-        return {"predict": query_req}
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=500, detail=str(e))
+# @app.post('/predict')
+# def predict_data(data: InputData):
+#     try:
+#         cpm = CrimePredictionModel()
+#         query_req = cpm.runAll(data.data, data.cols, 1)
+#         return {"predict": query_req}
+#     except Exception as e:
+#         print(e)
+#         raise HTTPException(status_code=500, detail=str(e))
 
 
 
