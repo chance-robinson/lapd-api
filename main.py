@@ -107,6 +107,11 @@ def root():
     area = execute_query(query)
     return {"desc": desc, "area": area}
 
+@app.get("/wakeup")
+def root():
+    # Replace the placeholder query with your actual query
+    return 'ok'
+
 @app.post('/data')
 def plot_data(request: Request):
     try:
