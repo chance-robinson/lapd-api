@@ -52,8 +52,6 @@ def query_request(request):
     area = request.area
     startDate = request.startDate
     endDate = request.endDate
-    print(startDate)
-    print(endDate)
     number = request.number
     area_conditions = []
     area_col = []
@@ -166,6 +164,11 @@ def root():
     area = execute_query(query)
     return {"desc": desc, "area": area}
 
+@app.get("/wakeup")
+def root():
+    # Replace the placeholder query with your actual query
+    return
+
 @app.post('/data')
 def plot_data(request: Request):
     try:
@@ -173,7 +176,6 @@ def plot_data(request: Request):
         tot_crimes = execute_query(query_req)
         return {"crimes": tot_crimes, "cols": cols}
     except Exception as e:
-        print(e)
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.post('/predict2')
@@ -183,10 +185,7 @@ def predict_data(request: PredictRequest):
         cols_list = cols.split(', ')
         tot_crimes = execute_query(query_req)
         cpm = CrimePredictionModel()
-        print(cols)
-        print(tot_crimes)
         query_req = cpm.runAll(tot_crimes, cols_list, 1)
         return {"predict": query_req}
     except Exception as e:
-        print(e)
         raise HTTPException(status_code=500, detail=str(e))

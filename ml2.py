@@ -97,7 +97,6 @@ class CrimePredictionModel:
             target_df = time_df[['lat', 'long']]
             # Select the columns for the feature variables (year, month, day, hour, minute)
             feature_df = time_df[['year', 'month', 'day', 'hour', 'minute']]
-            print(time_df)
             df = df.drop(columns=["lat", "long"])
             # Find the newest and oldest dates
             newest_date = df['date_occ'].max()
@@ -141,8 +140,6 @@ class CrimePredictionModel:
         # Train the model
         self.history = self.model.fit(X_train, y_train, epochs=2, batch_size=16, verbose=1, validation_split=0.2)
 
-        print(feature_df)
-        print(target_df)
                 # Define the model architecture
         # self.model2 = keras.Sequential([
         #     keras.layers.Dense(128, activation='relu', input_shape=(feature_df.shape[1],)),
@@ -155,8 +152,7 @@ class CrimePredictionModel:
         # self.model2.compile(optimizer=keras.optimizers.Adam(learning_rate=0.001), loss='mean_squared_error', metrics=['mean_squared_error'])
         #         # Train the model
         # self.history2 = self.model2.fit(feature_df, target_df, epochs=10, batch_size=16, verbose=1, validation_split=0.2)
-        print(feature_df)
-        print(target_df)
+
 
         svr = SVR(kernel='poly')  # You can choose different kernels like 'linear', 'poly', or 'sigmoid'
         self.model2 = MultiOutputRegressor(svr)
@@ -216,7 +212,6 @@ class CrimePredictionModel:
         latlong_preds = pd.DataFrame(y_pred_formatted, columns=['lat', 'long'])
         combined_df = pd.concat([filtered_df, latlong_preds], axis=1)
         combined_df['date'] = combined_df['date'].astype(str)
-        print(combined_df)
         return combined_df.to_json(orient='values')
 
     
