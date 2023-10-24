@@ -1,3 +1,4 @@
+python==3.8
 fastapi[all]
 pandas
 datetime
@@ -6,3 +7,4 @@ keras
 psycopg2
 sqlalchemy
 tensorflow
+scikit-learn
