@@ -2,8 +2,16 @@ from fastapi import FastAPI, HTTPException
 import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import matplotlib
 from ml2 import CrimePredictionModel
-import os
+
+matplotlib.use('agg')
+
+DB_HOST = 'localhost'
+DB_PORT = '5432'
+DB_NAME = 'lapd'
+DB_USER = 'postgres'
+DB_PASSWORD = 'postgres'
 
 app = FastAPI()
 
@@ -14,7 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 class Request(BaseModel):
     desc: list = []
     area: list = []
@@ -33,11 +40,11 @@ class InputData(BaseModel):
 
 def execute_query(query):
     conn = psycopg2.connect(
-        host=os.environ.get('DB_HOST'),
-        port=os.environ.get('DB_PORT'),
-        database=os.environ.get('DB_NAME'),
-        user=os.environ.get('DB_USER'),
-        password=os.environ.get('DB_PASSWORD')
+        host=DB_HOST,
+        port=DB_PORT,
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD
     )
     cursor = conn.cursor()
     cursor.execute(query)
@@ -164,21 +171,24 @@ def root():
     area = execute_query(query)
     return {"desc": desc, "area": area}
 
-@app.get("/wakeup")
-def root():
-    # Replace the placeholder query with your actual query
-    return
-
 @app.post('/data')
 def plot_data(request: Request):
     try:
-        print(request)
         query_req,cols = query_request(request)
-        print(query_req)
         tot_crimes = execute_query(query_req)
         return {"crimes": tot_crimes, "cols": cols}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post('/predict')
+def predict_data(data: InputData):
+    try:
+        cpm = CrimePredictionModel()
+        query_req = cpm.runAll(data.data, data.cols, 1)
+        return {"predict": query_req}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
     
 @app.post('/predict2')
 def predict_data(request: PredictRequest):
@@ -191,3 +201,6 @@ def predict_data(request: PredictRequest):
         return {"predict": query_req}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
