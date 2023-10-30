@@ -7,8 +7,6 @@ import os
 
 app = FastAPI()
 
-app = FastAPI()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Update with specific origins if required
@@ -34,11 +32,11 @@ class InputData(BaseModel):
 
 def execute_query(query):
     conn = psycopg2.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD
+        host=os.environ.get('DB_HOST'),
+        port=os.environ.get('DB_PORT'),
+        database=os.environ.get('DB_NAME'),
+        user=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASSWORD')
     )
     cursor = conn.cursor()
     cursor.execute(query)
