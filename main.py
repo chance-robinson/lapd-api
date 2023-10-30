@@ -2,16 +2,10 @@ from fastapi import FastAPI, HTTPException
 import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import matplotlib
 from ml2 import CrimePredictionModel
+import os
 
-matplotlib.use('agg')
-
-DB_HOST = 'localhost'
-DB_PORT = '5432'
-DB_NAME = 'lapd'
-DB_USER = 'postgres'
-DB_PASSWORD = 'postgres'
+app = FastAPI()
 
 app = FastAPI()
 
@@ -174,6 +168,7 @@ def root():
 @app.post('/data')
 def plot_data(request: Request):
     try:
+        print(request)
         query_req,cols = query_request(request)
         tot_crimes = execute_query(query_req)
         return {"crimes": tot_crimes, "cols": cols}
