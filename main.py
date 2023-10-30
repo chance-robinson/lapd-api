@@ -182,6 +182,10 @@ def predict_data(data: InputData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+@app.post('/wakeup')
+def predict_data():
+    return
+    
     
 @app.post('/predict2')
 def predict_data(request: PredictRequest):
