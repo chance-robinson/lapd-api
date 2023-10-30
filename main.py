@@ -172,7 +172,9 @@ def root():
 @app.post('/data')
 def plot_data(request: Request):
     try:
+        print(request)
         query_req,cols = query_request(request)
+        print(query_req)
         tot_crimes = execute_query(query_req)
         return {"crimes": tot_crimes, "cols": cols}
     except Exception as e:
